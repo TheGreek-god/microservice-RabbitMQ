@@ -1,0 +1,163 @@
+# version: "3.8"
+
+# services:
+#   # RabbitMQ
+#   rabbitmq:
+#     image: rabbitmq:3-management-alpine
+#     container_name: rabbitmq
+#     ports:
+#       - "5672:5672"
+#       - "15672:15672"
+#     environment:
+#       - RABBITMQ_DEFAULT_USER=guest
+#       - RABBITMQ_DEFAULT_PASS=guest
+#     networks:
+#       - microservices-network
+
+#   # API Gateway
+#   api-gateway:
+#     build: ./api-gateway
+#     container_name: api-gateway
+#     ports:
+#       - "8000:8000"
+#     environment:
+#       - NODE_ENV=dev
+#       - USER_SERVICE_URL=http://user-service:8001
+#       - CLIENT_SERVICE_URL=http://client-service:8002
+#       - PRODUCT_SERVICE_URL=http://product-service:8003
+#     depends_on:
+#       - rabbitmq
+#       - user-service
+#       - client-service
+#       - product-service
+#     networks:
+#       - microservices-network
+
+#   # User Service
+#   user-service:
+#     build: ./services/user
+#     container_name: user-service
+#     ports:
+#       - "8001:8001"
+#     environment:
+#       - NODE_ENV=dev
+#       - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+#     depends_on:
+#       - rabbitmq
+#     networks:
+#       - microservices-network
+
+#   # Client Service
+#   client-service:
+#     build: ./services/client
+#     container_name: client-service
+#     ports:
+#       - "8002:8002"
+#     environment:
+#       - NODE_ENV=dev
+#       - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+#     depends_on:
+#       - rabbitmq
+#     networks:
+#       - microservices-network
+
+#   # Product Service
+#   product-service:
+#     build: ./services/product
+#     container_name: product-service
+#     ports:
+#       - "8003:8003"
+#     environment:
+#       - NODE_ENV=dev
+#       - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+#     depends_on:
+#       - rabbitmq
+#     networks:
+#       - microservices-network
+
+# networks:
+#   microservices-network:
+#     driver: bridge
+
+services:
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - microservices-network
+
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=dev
+      - PORT=8000
+      - USER_SERVICE_URL=http://user-service:8001
+      - CLIENT_SERVICE_URL=http://client-service:8002
+      - PRODUCT_SERVICE_URL=http://product-service:8003
+    depends_on:
+      - rabbitmq
+      - user-service
+      - client-service
+      - product-service
+    networks:
+      - microservices-network
+
+  # User Service
+  user-service:
+    build: ./services/user
+    container_name: user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - NODE_ENV=dev
+      - PORT=8001
+      - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - microservices-network
+
+  # Client Service
+  client-service:
+    build: ./services/client
+    container_name: client-service
+    ports:
+      - "8002:8002"
+    environment:
+      - NODE_ENV=dev
+      - PORT=8002
+      - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - microservices-network
+
+  # Product Service
+  product-service:
+    build: ./services/product
+    container_name: product-service
+    ports:
+      - "8003:8003"
+    environment:
+      - NODE_ENV=dev
+      - PORT=8003
+      - MESSAGE_BROKER_URL=amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
