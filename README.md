@@ -1,6 +1,6 @@
 
   
-# microservices-base-rabbitmq
+# microservices-rabbitmq
 
 Basic microservices project that includes a gateway (api-gateway) and 3 microservices (user/product/client) and a messaging queue
 
